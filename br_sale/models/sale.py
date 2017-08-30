@@ -189,8 +189,8 @@ class SaleOrderLine(models.Model):
             fpos = line.order_id.fiscal_position_id or \
                 line.order_id.partner_id.property_account_position_id
             if fpos:
-                vals = fpos.map_tax_extra_values(line.company_id, line.product_id, line.order_id.partner_id, 
-                    line.order_id.partner_id.state_id, line.product_id.fiscal_classification_id)
+                vals = fpos.map_tax_extra_values(
+	            line.company_id, line.product_id, line.order_id.partner_id, line.product_id.fiscal_classification_id)
 
                 for key, value in vals.iteritems():
                     if value and key in line._fields:

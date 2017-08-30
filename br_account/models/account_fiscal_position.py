@@ -182,7 +182,7 @@ class AccountFiscalPosition(models.Model):
             return {}
 
     @api.model
-    def map_tax_extra_values(self, company, product, partner):
+    def map_tax_extra_values(self, company, product, partner, ncm):
         to_state = partner.state_id
 
         taxes = ('icms', 'simples', 'ipi', 'pis', 'cofins',
@@ -190,7 +190,7 @@ class AccountFiscalPosition(models.Model):
         res = {}
         for tax in taxes:
             vals = self._filter_rules(
-                self.id, tax, partner, product, to_state)
+                self.id, tax, partner, product, to_state, ncm)
             res.update({k: v for k, v in vals.items() if v})
 
         return res
