@@ -115,7 +115,7 @@ class AccountFiscalPosition(models.Model):
         'account.fiscal.position.tax.rule', 'fiscal_position_id',
         string="Regras INSS", domain=[('domain', '=', 'inss')])
 
-    def _filter_rules(self, fpos_id, type_tax, partner, product, state, ncm):
+        def _filter_rules(self, fpos_id, type_tax, partner, product, state):
         rule_obj = self.env['account.fiscal.position.tax.rule']
         domain = [('fiscal_position_id', '=', fpos_id),
                   ('domain', '=', type_tax)]
@@ -130,10 +130,6 @@ class AccountFiscalPosition(models.Model):
                     rules_points[rule.id] += 1
                 if product.categ_id in rule.product_category_ids:
                     rules_points[rule.id] += 1
-                if ncm in rule.fiscal_classification_ids:
-                    rules_points[rule.id] += 1
-                if len(rule.fiscal_classification_ids) > 0:
-                    rules_points[rule.id] -= 1
                 if product in rule.product_ids:
                     rules_points[rule.id] += 1
                 if len(rule.product_ids) > 0:
@@ -182,7 +178,7 @@ class AccountFiscalPosition(models.Model):
             return {}
 
     @api.model
-    def map_tax_extra_values(self, company, product, partner, ncm):
+    def map_tax_extra_values(self, company, product, partner):
         to_state = partner.state_id
 
         taxes = ('icms', 'simples', 'ipi', 'pis', 'cofins',
@@ -190,7 +186,7 @@ class AccountFiscalPosition(models.Model):
         res = {}
         for tax in taxes:
             vals = self._filter_rules(
-                self.id, tax, partner, product, to_state, ncm)
+                self.id, tax, partner, product, to_state)
             res.update({k: v for k, v in vals.items() if v})
 
         return res
